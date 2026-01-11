@@ -12,6 +12,7 @@ import { listIssueTypesCommand } from './commands/list-issue-types';
 import { runJqlCommand } from './commands/run-jql';
 import { updateDescriptionCommand } from './commands/update-description';
 import { addCommentCommand } from './commands/add-comment';
+import { createTaskCommand } from './commands/create-task';
 import { aboutCommand } from './commands/about';
 import { authCommand } from './commands/auth';
 import { isCommandAllowed, getAllowedCommands } from './lib/settings';
@@ -106,6 +107,16 @@ program
   .requiredOption('--file-path <path>', 'Path to Markdown file')
   .requiredOption('--issue-key <key>', 'Jira issue key (e.g., PS-123)')
   .action(withPermission('add-comment', addCommentCommand));
+
+// Create task command
+program
+  .command('create-task')
+  .description('Create a new Jira issue')
+  .requiredOption('--title <title>', 'Issue title/summary')
+  .requiredOption('--project <project>', 'Project key (e.g., PROJ)')
+  .requiredOption('--issue-type <type>', 'Issue type (e.g., Task, Epic, Subtask)')
+  .option('--parent <key>', 'Parent issue key (required for subtasks)')
+  .action(withPermission('create-task', createTaskCommand));
 
 // About command (always allowed)
 program

@@ -8,7 +8,9 @@ A TypeScript-based command-line interface for interacting with Atlassian Jira. B
 - List all projects
 - View task details with comments
 - Show available statuses for a project
+- Create new Jira issues (tasks, epics, subtasks, etc.)
 - Update issue descriptions from Markdown files
+- Add comments to issues from Markdown files
 - Execute JQL queries with formatted results
 - Beautiful table formatting with cli-table3
 - Colored output for better readability
@@ -210,6 +212,45 @@ JQL Query Results (5 issues found)
 └────────────┴──────────────────────────┴─────────────┴────────────┴──────────┘
 ```
 
+### Create New Issue
+
+Create a new Jira issue in any project.
+
+```bash
+jira-ai create-task --title <title> --project <project-key> --issue-type <type> [--parent <parent-key>]
+```
+
+**Example:**
+```bash
+jira-ai create-task --title "Configure production server" --project BP --issue-type Task
+```
+
+**For subtasks:**
+```bash
+jira-ai create-task --title "Update documentation" --project BP --issue-type Subtask --parent BP-1234
+```
+
+**Options:**
+- `--title` - Issue title/summary (required)
+- `--project` - Project key (required, e.g., "BP", "PROJ")
+- `--issue-type` - Issue type name (required, e.g., "Task", "Epic", "Subtask", "Bug", "Story")
+- `--parent` - Parent issue key (optional, required for subtasks)
+
+**Output:**
+```
+✔ Issue created successfully: BP-1235
+
+Title: Configure production server
+Project: BP
+Issue Type: Task
+
+Issue Key: BP-1235
+```
+
+**Tips:**
+- Use `jira-ai list-issue-types <project-key>` to see available issue types for a project
+- Use `jira-ai projects` to see available projects
+
 ### Update Issue Description
 
 Update a Jira issue's description from a Markdown file. The Markdown content is automatically converted to Atlassian Document Format (ADF).
@@ -246,6 +287,54 @@ File: /path/to/description.md
 
 **Note:** This command replaces the entire issue description with the content from the file.
 
+### Add Comment to Issue
+
+Add a comment to a Jira issue from a Markdown file. The Markdown content is automatically converted to Atlassian Document Format (ADF).
+
+```bash
+jira-ai add-comment --issue-key <issue-key> --file-path <path-to-markdown-file>
+```
+
+**Example:**
+```bash
+jira-ai add-comment --issue-key BP-1234 --file-path ./comment.md
+```
+
+**Output:**
+```
+✔ Comment added successfully to BP-1234
+
+File: /path/to/comment.md
+```
+
+### List Issue Types
+
+Display all available issue types for a project.
+
+```bash
+jira-ai list-issue-types <project-key>
+```
+
+**Example:**
+```bash
+jira-ai list-issue-types BP
+```
+
+**Output:**
+```
+Issue Types for Project BP (5 total)
+
+┌─────────────┬──────────────────────────┬──────────┬────────────────┐
+│ Name        │ Description              │ Subtask  │ Hierarchy      │
+├─────────────┼──────────────────────────┼──────────┼────────────────┤
+│ Epic        │ A big user story         │ No       │ Level 1        │
+├─────────────┼──────────────────────────┼──────────┼────────────────┤
+│ Task        │ A task                   │ No       │ Level 0        │
+├─────────────┼──────────────────────────┼──────────┼────────────────┤
+│ Subtask     │ A subtask                │ Yes      │ Level -1       │
+└─────────────┴──────────────────────────┴──────────┴────────────────┘
+```
+
 ## Settings
 
 The CLI uses a `settings.yaml` file to control which commands and projects are allowed. This provides an additional security layer.
@@ -262,11 +351,14 @@ commands:
   - projects
   - run-jql
   - task-with-details
-  # - update-description  # Uncomment to enable description updates
+  - list-issue-types
+  # - create-task        # Uncomment to enable creating issues
+  # - add-comment        # Uncomment to enable adding comments
+  # - update-description # Uncomment to enable description updates
   # - project-statuses
 ```
 
-**Important:** The `update-description` command is commented out by default since it's a WRITE operation. Uncomment it only if you need to update issue descriptions.
+**Important:** Write operations (`create-task`, `add-comment`, `update-description`) are commented out by default for safety. Uncomment them in `settings.yaml` only if you need these features.
 
 ## Development
 
@@ -285,6 +377,10 @@ jira-service/
 │   ├── cli.ts                       # Main entry point
 │   ├── commands/                    # Command implementations
 │   │   ├── about.ts
+│   │   ├── add-comment.ts           # Add comments to issues
+│   │   ├── auth.ts
+│   │   ├── create-task.ts           # Create new issues
+│   │   ├── list-issue-types.ts
 │   │   ├── me.ts
 │   │   ├── projects.ts
 │   │   ├── project-statuses.ts

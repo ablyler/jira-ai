@@ -240,13 +240,15 @@ export function formatProjectIssueTypes(projectKey: string, issueTypes: IssueTyp
   // Display standard issue types
   if (standardTypes.length > 0) {
     output += chalk.bold('Standard Issue Types:') + '\n';
-    const table = createTable(['Name', 'Type', 'Description'], [20, 15, 55]);
+    const table = createTable(['Name', 'ID', 'Hierarchy', 'Type', 'Description'], [18, 8, 10, 12, 42]);
 
     standardTypes.forEach((issueType) => {
       table.push([
         chalk.cyan(issueType.name),
+        chalk.gray(issueType.id),
+        chalk.magenta(issueType.hierarchyLevel.toString()),
         issueType.subtask ? chalk.yellow('Subtask') : chalk.green('Standard'),
-        truncate(issueType.description || chalk.gray('No description'), 55),
+        truncate(issueType.description || chalk.gray('No description'), 42),
       ]);
     });
 
@@ -256,13 +258,15 @@ export function formatProjectIssueTypes(projectKey: string, issueTypes: IssueTyp
   // Display subtask types separately if they exist
   if (subtaskTypes.length > 0) {
     output += '\n' + chalk.bold('Subtask Types:') + '\n';
-    const subtaskTable = createTable(['Name', 'Type', 'Description'], [20, 15, 55]);
+    const subtaskTable = createTable(['Name', 'ID', 'Hierarchy', 'Type', 'Description'], [18, 8, 10, 12, 42]);
 
     subtaskTypes.forEach((issueType) => {
       subtaskTable.push([
         chalk.cyan(issueType.name),
+        chalk.gray(issueType.id),
+        chalk.magenta(issueType.hierarchyLevel.toString()),
         chalk.yellow('Subtask'),
-        truncate(issueType.description || chalk.gray('No description'), 55),
+        truncate(issueType.description || chalk.gray('No description'), 42),
       ]);
     });
 

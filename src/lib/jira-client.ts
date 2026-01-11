@@ -383,3 +383,45 @@ export async function getProjectIssueTypes(projectIdOrKey: string): Promise<Issu
     hierarchyLevel: issueType.hierarchyLevel || 0,
   })) || [];
 }
+
+/**
+ * Create a new issue
+ * @param projectKey - The project key (e.g., "PROJ")
+ * @param summary - The issue title/summary
+ * @param issueTypeName - The issue type name (e.g., "Task", "Epic", "Subtask")
+ * @param parentKey - Optional parent issue key for subtasks
+ */
+export async function createIssue(
+  projectKey: string,
+  summary: string,
+  issueTypeName: string,
+  parentKey?: string
+): Promise<{ key: string; id: string }> {
+  const client = getJiraClient();
+
+  const fields: any = {
+    project: {
+      key: projectKey,
+    },
+    summary,
+    issuetype: {
+      name: issueTypeName,
+    },
+  };
+
+  // Add parent field if this is a subtask
+  if (parentKey) {
+    fields.parent = {
+      key: parentKey,
+    };
+  }
+
+  const response = await client.issues.createIssue({
+    fields,
+  });
+
+  return {
+    key: response.key || '',
+    id: response.id || '',
+  };
+}

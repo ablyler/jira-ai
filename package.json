@@ -1,16 +1,30 @@
 {
   "name": "jira-ai",
-  "version": "0.2.7",
+  "version": "0.3.1",
   "description": "CLI tool for interacting with Atlassian Jira",
   "main": "dist/cli.js",
   "bin": {
     "jira-ai": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "settings.yaml",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/jira-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/jira-ai/issues"
+  },
+  "homepage": "https://github.com/yourusername/jira-ai#readme",
   "scripts": {
     "dev": "ts-node src/cli.ts",
     "build": "tsc && chmod +x dist/cli.js",
     "start": "node dist/cli.js",
     "link": "npm run build && npm link",
+    "prepublishOnly": "npm run build && npm test",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -19,10 +33,18 @@
   "keywords": [
     "jira",
     "cli",
-    "atlassian"
+    "atlassian",
+    "jira-api",
+    "issue-tracker",
+    "task-management",
+    "command-line",
+    "typescript"
   ],
-  "author": "",
+  "author": "Your Name <your.email@example.com>",
   "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "dependencies": {
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.5",
