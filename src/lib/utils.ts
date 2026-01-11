@@ -1,4 +1,6 @@
 import chalk from 'chalk';
+import { fromADF } from 'mdast-util-from-adf';
+import { toMarkdown } from 'mdast-util-to-markdown';
 
 /**
  * Validate required environment variables
@@ -44,4 +46,31 @@ export function formatTimestamp(date: string | Date): string {
 export function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength - 3) + '...';
+}
+
+/**
+ * Convert Atlassian Document Format (ADF) to Markdown
+ * Handles both string content and ADF JSON objects
+ */
+export function convertADFToMarkdown(content: any): string {
+  // If content is already a string, return it as-is
+  if (typeof content === 'string') {
+    return content;
+  }
+
+  // If content is null or undefined, return empty string
+  if (!content) {
+    return '';
+  }
+
+  try {
+    // Convert ADF to mdast, then mdast to markdown
+    const mdastTree = fromADF(content);
+    const markdown = toMarkdown(mdastTree);
+    return markdown.trim();
+  } catch (error) {
+    // If conversion fails, fall back to JSON string representation
+    console.error('Failed to convert ADF to Markdown:', error);
+    return JSON.stringify(content, null, 2);
+  }
 }

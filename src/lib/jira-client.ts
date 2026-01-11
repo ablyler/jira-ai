@@ -1,4 +1,5 @@
 import { Version3Client } from 'jira.js';
+import { convertADFToMarkdown } from './utils';
 
 export interface UserInfo {
   accountId: string;
@@ -134,21 +135,14 @@ export async function getTaskWithDetails(taskId: string): Promise<TaskDetails> {
       displayName: comment.author?.displayName || 'Unknown',
       emailAddress: comment.author?.emailAddress,
     },
-    body: typeof comment.body === 'string' ? comment.body : JSON.stringify(comment.body),
+    body: convertADFToMarkdown(comment.body),
     created: comment.created || '',
     updated: comment.updated || '',
   })) || [];
 
-  // Convert description to string if it's an ADF Document
-  let description: string | undefined;
-  if (issue.fields.description) {
-    if (typeof issue.fields.description === 'string') {
-      description = issue.fields.description;
-    } else {
-      // ADF Document - convert to JSON string for now
-      description = JSON.stringify(issue.fields.description, null, 2);
-    }
-  }
+  // Convert description from ADF to Markdown
+  const descriptionMarkdown = convertADFToMarkdown(issue.fields.description);
+  const description = descriptionMarkdown || undefined;
 
   return {
     id: issue.id || '',
