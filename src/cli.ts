@@ -9,6 +9,7 @@ import { projectsCommand } from './commands/projects';
 import { taskWithDetailsCommand } from './commands/task-with-details';
 import { projectStatusesCommand } from './commands/project-statuses';
 import { runJqlCommand } from './commands/run-jql';
+import { updateDescriptionCommand } from './commands/update-description';
 import { aboutCommand } from './commands/about';
 import { isCommandAllowed, getAllowedCommands } from './lib/settings';
 
@@ -69,6 +70,13 @@ program
   .description('Execute JQL query and display results')
   .option('-l, --limit <number>', 'Maximum number of results (default: 50)', '50')
   .action(withPermission('run-jql', runJqlCommand));
+
+// Update description command
+program
+  .command('update-description <task-id>')
+  .description('Update task description from a Markdown file')
+  .requiredOption('--from-file <path>', 'Path to Markdown file')
+  .action(withPermission('update-description', updateDescriptionCommand));
 
 // About command (always allowed)
 program

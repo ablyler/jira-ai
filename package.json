@@ -30,6 +30,7 @@
     "dotenv": "^17.2.3",
     "jira.js": "^5.2.2",
     "js-yaml": "^4.1.1",
+    "md-to-adf": "^0.6.4",
     "mdast-util-from-adf": "^2.2.0",
     "mdast-util-to-markdown": "^2.1.2",
     "ora": "^5.4.1"

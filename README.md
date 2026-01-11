@@ -8,6 +8,8 @@ A TypeScript-based command-line interface for interacting with Atlassian Jira. B
 - List all projects
 - View task details with comments
 - Show available statuses for a project
+- Update issue descriptions from Markdown files
+- Execute JQL queries with formatted results
 - Beautiful table formatting with cli-table3
 - Colored output for better readability
 - Loading spinners for async operations
@@ -182,6 +184,90 @@ Project BP - Available Statuses (21 total)
 └─────────────────────────┴────────────────────┴─────────────────────────────────────────────┘
 ```
 
+### Execute JQL Query
+
+Run a JQL (Jira Query Language) query and display results in a formatted table.
+
+```bash
+jira run-jql <jql-query> [--limit <number>]
+```
+
+**Example:**
+```bash
+jira run-jql "project = BP AND status = 'In Progress'" --limit 10
+```
+
+**Output:**
+```
+JQL Query Results (5 issues found)
+
+┌────────────┬──────────────────────────┬─────────────┬────────────┬──────────┐
+│ Key        │ Summary                  │ Status      │ Assignee   │ Priority │
+├────────────┼──────────────────────────┼─────────────┼────────────┼──────────┤
+│ BP-1234    │ Configure production...  │ In Progress │ John Doe   │ High     │
+├────────────┼──────────────────────────┼─────────────┼────────────┼──────────┤
+│ BP-5678    │ Update documentation     │ In Progress │ Jane Smith │ Medium   │
+└────────────┴──────────────────────────┴─────────────┴────────────┴──────────┘
+```
+
+### Update Issue Description
+
+Update a Jira issue's description from a Markdown file. The Markdown content is automatically converted to Atlassian Document Format (ADF).
+
+```bash
+jira update-description <task-id> --from-file <path-to-markdown-file>
+```
+
+**Example:**
+```bash
+jira update-description BP-1234 --from-file ./description.md
+```
+
+**Requirements:**
+- The command must be enabled in `settings.yaml` (commented out by default for safety)
+- You must have edit permissions for the issue in Jira
+- The Markdown file must exist and be non-empty
+
+**Supported Markdown:**
+- Headings (# H1, ## H2, etc.)
+- Bold, italic, strikethrough
+- Lists (ordered and unordered)
+- Code blocks with syntax highlighting
+- Links and images
+- Tables
+- Blockquotes
+
+**Output:**
+```
+✔ Description updated successfully for BP-1234
+
+File: /path/to/description.md
+```
+
+**Note:** This command replaces the entire issue description with the content from the file.
+
+## Settings
+
+The CLI uses a `settings.yaml` file to control which commands and projects are allowed. This provides an additional security layer.
+
+**Example settings.yaml:**
+```yaml
+# Projects: List of allowed projects (use "all" to allow all projects)
+projects:
+  - all
+
+# Commands: List of allowed commands (use "all" to allow all commands)
+commands:
+  - me
+  - projects
+  - run-jql
+  - task-with-details
+  # - update-description  # Uncomment to enable description updates
+  # - project-statuses
+```
+
+**Important:** The `update-description` command is commented out by default since it's a WRITE operation. Uncomment it only if you need to update issue descriptions.
+
 ## Development
 
 ### Scripts
@@ -196,20 +282,34 @@ Project BP - Available Statuses (21 total)
 ```
 jira-service/
 ├── src/
-│   ├── cli.ts                    # Main entry point
-│   ├── commands/                 # Command implementations
+│   ├── cli.ts                       # Main entry point
+│   ├── commands/                    # Command implementations
+│   │   ├── about.ts
 │   │   ├── me.ts
 │   │   ├── projects.ts
 │   │   ├── project-statuses.ts
-│   │   └── task-with-details.ts
-│   └── lib/
-│       ├── jira-client.ts        # Jira API wrapper
-│       ├── formatters.ts         # Output formatting
-│       └── utils.ts              # Utility functions
-├── dist/                         # Compiled JavaScript
+│   │   ├── run-jql.ts
+│   │   ├── task-with-details.ts
+│   │   └── update-description.ts    # Update issue descriptions
+│   ├── lib/
+│   │   ├── jira-client.ts           # Jira API wrapper
+│   │   ├── formatters.ts            # Output formatting
+│   │   ├── settings.ts              # Settings management
+│   │   └── utils.ts                 # Utility functions
+│   └── types/
+│       └── md-to-adf.d.ts           # Type definitions for md-to-adf
+├── tests/                           # Test files
+│   ├── __mocks__/                   # Jest mocks
+│   ├── cli-permissions.test.ts
+│   ├── projects.test.ts
+│   ├── settings.test.ts
+│   └── update-description.test.ts
+├── dist/                            # Compiled JavaScript
 ├── package.json
 ├── tsconfig.json
-└── .env                          # Environment variables
+├── jest.config.js
+├── settings.yaml                    # Command/project permissions
+└── .env                             # Environment variables
 ```
 
 ## Technologies Used
@@ -221,6 +321,8 @@ jira-service/
 - **chalk** - Terminal colors and styling
 - **ora** - Loading spinners
 - **dotenv** - Environment variable management
+- **md-to-adf** - Markdown to Atlassian Document Format conversion
+- **Jest** - Testing framework
 
 ## Error Handling
 

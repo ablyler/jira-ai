@@ -11,7 +11,7 @@ projects:
   # - all
 
 # Commands: List of allowed commands (use "all" to allow all commands)
-# Available commands: me, projects, task-with-details, project-statuses, run-jql, about
+# Available commands: me, projects, task-with-details, project-statuses, run-jql, update-description, about
 commands:
   - me
   - projects
@@ -20,3 +20,4 @@ commands:
   # - all
   - task-with-details
   # - project-statuses
+  - update-description  

@@ -238,3 +238,22 @@ export async function searchIssuesByJql(jqlQuery: string, maxResults: number): P
     } : null,
   })) || [];
 }
+
+/**
+ * Update the description of a Jira issue
+ * @param taskId - The issue key (e.g., "PROJ-123")
+ * @param adfContent - The description content in ADF format
+ */
+export async function updateIssueDescription(
+  taskId: string,
+  adfContent: any
+): Promise<void> {
+  const client = getJiraClient();
+  await client.issues.editIssue({
+    issueIdOrKey: taskId,
+    fields: {
+      description: adfContent,
+    },
+    notifyUsers: false,
+  });
+}
