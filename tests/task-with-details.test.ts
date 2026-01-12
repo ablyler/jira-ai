@@ -27,6 +27,7 @@ describe('Task With Details Command', () => {
     reporter: { displayName: 'Jane Smith' },
     created: '2023-01-01T10:00:00.000Z',
     updated: '2023-01-02T10:00:00.000Z',
+    labels: ['frontend', 'ui'],
     comments: [],
     parent: {
       id: '10000',

@@ -68,6 +68,7 @@ export interface TaskDetails {
   };
   created: string;
   updated: string;
+  labels: string[];
   comments: Comment[];
   parent?: LinkedIssue;
   subtasks: LinkedIssue[];
@@ -207,6 +208,7 @@ export async function getTaskWithDetails(taskId: string): Promise<TaskDetails> {
       'comment',
       'parent',
       'subtasks',
+      'labels',
     ],
   });
 
@@ -262,6 +264,7 @@ export async function getTaskWithDetails(taskId: string): Promise<TaskDetails> {
     } : undefined,
     created: issue.fields.created || '',
     updated: issue.fields.updated || '',
+    labels: issue.fields.labels || [],
     comments,
     parent,
     subtasks,

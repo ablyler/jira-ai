@@ -44,6 +44,7 @@ describe('Jira Client', () => {
           reporter: { displayName: 'Jane Smith' },
           created: '2023-01-01T10:00:00.000Z',
           updated: '2023-01-02T10:00:00.000Z',
+          labels: ['bug', 'urgent'],
           comment: {
             comments: [
               {
@@ -81,10 +82,11 @@ describe('Jira Client', () => {
 
       expect(mockGetIssue).toHaveBeenCalledWith({
         issueIdOrKey: 'PROJ-123',
-        fields: expect.arrayContaining(['parent', 'subtasks'])
+        fields: expect.arrayContaining(['parent', 'subtasks', 'labels'])
       });
 
       expect(result.key).toBe('PROJ-123');
+      expect(result.labels).toEqual(['bug', 'urgent']);
       expect(result.parent).toEqual({
         id: '10000',
         key: 'PROJ-100',
@@ -108,7 +110,8 @@ describe('Jira Client', () => {
           summary: 'Test summary',
           status: { name: 'In Progress' },
           created: '2023-01-01T10:00:00.000Z',
-          updated: '2023-01-02T10:00:00.000Z'
+          updated: '2023-01-02T10:00:00.000Z',
+          labels: []
         }
       };
 
@@ -118,6 +121,7 @@ describe('Jira Client', () => {
 
       expect(result.parent).toBeUndefined();
       expect(result.subtasks).toEqual([]);
+      expect(result.labels).toEqual([]);
     });
   });
 });

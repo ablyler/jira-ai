@@ -78,6 +78,14 @@ export function formatTaskDetails(task: TaskDetails): string {
     ['Updated', formatTimestamp(task.updated)]
   );
 
+  // Add labels to basic info table if present
+  if (task.labels && task.labels.length > 0) {
+    const labelsString = task.labels
+      .map((label) => chalk.bgBlue.white.bold(` ${label} `))
+      .join(' ');
+    infoTable.push(['Labels', labelsString]);
+  }
+
   output += infoTable.toString() + '\n\n';
 
   // Parent Task

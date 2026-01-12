@@ -13,14 +13,12 @@ projects:
 # Commands: List of allowed commands (use "all" to allow all commands)
 # Available commands: me, projects, task-with-details, project-statuses, list-issue-types, run-jql, update-description, add-comment, create-task, about
 commands:
-  - me
-  - projects
-  - run-jql
+  - all
   # Uncomment below to allow all commands
   # - all
-  - task-with-details
+  # - task-with-details
   # - project-statuses
-  - list-issue-types
-  - update-description
-  - add-comment
-  - create-task
+  # - list-issue-types
+  # - update-description
+  # - add-comment
+  # - create-task
